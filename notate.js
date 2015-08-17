@@ -3,11 +3,12 @@
 var exports = module.exports = {},
     Curl = require('node-libcurl').Curl,
     fs = require('fs'),
+    inquirer = require('inquirer'),
     readline = require('readline'),
     Getopt = require('node-getopt'),
     curl = new Curl(),
     url  = 'http://localhost:1972',
-    addNotefile, makeRequest, writeFile,
+    addNotefile, getNotefiles, makeRequest, writeFile,
     note, notefile, getopt, opt, rl;
 
 getopt = new Getopt([
@@ -20,6 +21,20 @@ addNotefile = exports.addNotefile = function (filename) {
     var json;
 
     if (fs.existsSync('.notaterc')) {
+        getNotefiles(function (json) {
+            var notefiles = json.notefiles;
+
+            if (notefiles.indexOf(filename) === -1) {
+                notefiles.push(filename);
+                notefiles.sort();
+
+                writeFile(json);
+            } else {
+                console.log('Not adding, it already exists!');
+            }
+        });
+
+        /*
         fs.readFile('.notaterc', {
             encoding: 'utf8'
         }, function (err, data) {
@@ -41,6 +56,7 @@ addNotefile = exports.addNotefile = function (filename) {
                 console.log('Not adding, it already exists!');
             }
         });
+        */
     } else {
         json = {
             'notefiles': [
@@ -53,25 +69,57 @@ addNotefile = exports.addNotefile = function (filename) {
     }
 };
 
-makeRequest = exports.makeRequest = function () {
+getNotefiles = exports.getNotefiles = function (callback) {
+    fs.readFile('.notaterc', {
+        encoding: 'utf8'
+    }, function (err, data) {
+        if (err) {
+            throw err;
+        }
+
+        callback(JSON.parse(data));
+    });
+};
+
+makeRequest = exports.makeRequest = function (note) {
     var data = {
-        file: 'quux',
         note: note
     };
 
-    curl.setOpt(Curl.option.URL, url);
-    curl.setOpt(Curl.option.POSTFIELDS, JSON.stringify(data));
-    //curl.setOpt(Curl.option.VERBOSE, true);
+    getNotefiles(function (json) {
+        var notefiles = json.notefiles,
+            choices = [];
 
-    curl.perform();
+        notefiles.forEach(function (val) {
+            choices.push({
+                name: val,
+                value: val
+            });
+        });
 
-    curl.on('end', function (statusCode, body) {
-        // TODO: Check statusCode!
-        console.log(body);
-        this.close();
+        inquirer.prompt([{
+            type: 'list',
+            name: 'notefile',
+            message: 'Please choose the notefile to which the note should be written:',
+            choices: choices
+        }], function (answers) {
+            data.notefile = answers.notefile;
+
+            curl.setOpt(Curl.option.URL, url);
+            curl.setOpt(Curl.option.POSTFIELDS, JSON.stringify(data));
+            //curl.setOpt(Curl.option.VERBOSE, true);
+
+            curl.perform();
+
+            curl.on('end', function (statusCode, body) {
+                // TODO: Check statusCode!
+                console.log(body);
+                this.close();
+            });
+
+            curl.on('error', curl.close.bind(curl));
+        });
     });
-
-    curl.on('error', curl.close.bind(curl));
 };
 
 writeFile = exports.writeFile = function (json) {
@@ -95,7 +143,7 @@ notefile = opt.options['add-notefile'];
 if (notefile) {
     addNotefile(notefile);
 } else {
-    note = opt.argv[2];
+    note = opt.argv[0];
 
     if (!note) {
         //throw new Error('You did not pass a note!');

@@ -20,7 +20,7 @@ startServer = exports.startServer = function () {
             req.on('data', function (body) {
                 data = JSON.parse(body);
 
-                fs.writeFile(data.file, data.note, {
+                fs.writeFile(data.notefile, data.note, {
                     encoding: 'utf8',
                     flag: 'a+',
                     mode: 0666
@@ -34,7 +34,7 @@ startServer = exports.startServer = function () {
 
 
             req.on('end', function () {
-                res.end('Notation completed succesfully.\n');
+                res.end('Notation completed succesfully.');
             });
 
             /*
