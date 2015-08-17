@@ -1,0 +1,14 @@
+{
+    "clean": [{
+        "run": "rm -rf build"
+    }],
+
+    "js": [{
+        "src": [
+            "notefiler.js",
+            "server.js"
+        ],
+        "output": "build/notefiler.js"
+    }]
+}
+
