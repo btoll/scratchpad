@@ -43,9 +43,7 @@ addNotefile = exports.addNotefile = function (notefile) {
         });
     } else {
         json = {
-            'notefiles': [
-                notefile
-            ]
+            'notefiles': notefile.split(',').sort()
         };
 
         writeFile(json);
@@ -54,13 +52,14 @@ addNotefile = exports.addNotefile = function (notefile) {
 };
 
 getNotefiles = exports.getNotefiles = function (callback) {
+    // TODO: Let dev customize name of manifest!
     fs.readFile('.notefilerc', {
         encoding: 'utf8'
     }, function (err, data) {
         if (err) {
-            // TODO: custom error handler?
-            // If .notefilerc does not exist, probably they are trying to add a note. There needs to be
-            // some warning that they should do --init or add a notefile, etc.
+            // If .notefilerc does not exist, probably they are trying to add a note.
+            err.name = 'notefilerc does not exist';
+            err.message = 'The current operation expects that the manifest has been created, use --init or --add-notefile.';
             throw err;
         }
 
@@ -116,7 +115,15 @@ makeRequest = exports.makeRequest = (function () {
                 });
             });
         } else {
-            send(data);
+            getNotefiles(function (json) {
+                var notefiles = json.notefiles;
+
+                if (notefiles.indexOf(notefile) > -1) {
+                    send(data);
+                } else {
+                    console.log('The specified notefile has not been added, use --add-notefile.');
+                }
+            });
         }
     };
 }());
@@ -215,7 +222,7 @@ else if ((notefile = opt.options['remove-notefile']) !== undefined) {
         });
 
         rl.on('line', function (line) {
-            note += line;
+            note += line + '\n';
         });
 
         rl.on('close', function () {
