@@ -1,11 +1,11 @@
 {
-  "name": "notate",
+  "name": "notefiler",
   "version": "0.1.0",
   "description": "Easy note saver",
-  "main": "notate.js",
+  "main": "notefiler.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node notefiler.js"
   },
   "author": "Benjamin Toll",
   "license": "WTFPL",
