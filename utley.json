@@ -5,10 +5,10 @@
 
     "js": [{
         "src": [
-            "notefiler.js",
+            "notefile.js",
             "server.js"
         ],
-        "output": "build/notefiler.js"
+        "output": "build/notefile.js"
     }]
 }
 
