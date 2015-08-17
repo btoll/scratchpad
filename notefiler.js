@@ -1,76 +1,60 @@
 // https://github.com/JCMais/node-libcurl/blob/master/examples/post-data.js
 // curl -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"file":"bar.txt", "note": "aaaaaaahhh!!"}' http://localhost:1972
 var exports = module.exports = {},
-    Curl = require('node-libcurl').Curl,
     fs = require('fs'),
     inquirer = require('inquirer'),
-    readline = require('readline'),
     Getopt = require('node-getopt'),
+    Curl = require('node-libcurl').Curl,
+    readline = require('readline'),
     curl = new Curl(),
     url  = 'http://localhost:1972',
-    addNotefile, getNotefiles, makeRequest, writeFile,
-    note, notefile, getopt, opt, rl;
+    addNotefile, getNotefiles, makeRequest, removeNotefile, writeFile,
+    notefile, note, getopt, opt, rl;
 
 getopt = new Getopt([
-    ['' , 'add-notefile=FILE', 'Add a new notefile'],
-    ['h', 'help', 'display this help'],
-    ['v', 'version', 'show version']
+    ['' , 'add-notefile=FILE(,S)', 'Add a new notefile(s)'],
+    ['' , 'remove-notefile[=FILE(,S)]', 'Remove a notefile(s)'],
+    ['h', 'help', 'display this help']
 ]).bindHelp();
 
-addNotefile = exports.addNotefile = function (filename) {
+addNotefile = exports.addNotefile = function (notefile) {
     var json;
 
-    if (fs.existsSync('.notaterc')) {
+    if (fs.existsSync('.notefilerc')) {
         getNotefiles(function (json) {
-            var notefiles = json.notefiles;
+            var notefiles = json.notefiles,
+                i, len, file;
 
-            if (notefiles.indexOf(filename) === -1) {
-                notefiles.push(filename);
-                notefiles.sort();
+            // Multiple notefiles could have been passed.
+            notefile = notefile.split(',');
 
-                writeFile(json);
-            } else {
-                console.log('Not adding, it already exists!');
+            for (i = 0, len = notefile.length; i < len; i++) {
+                file = notefile[i];
+
+                if (notefiles.indexOf(file) === -1) {
+                    notefiles.push(file);
+                } else {
+                    console.log('Not adding ' + file + ', it already exists!');
+                }
             }
+
+            notefiles.sort();
+            writeFile(json);
         });
-
-        /*
-        fs.readFile('.notaterc', {
-            encoding: 'utf8'
-        }, function (err, data) {
-            var notefiles;
-
-            if (err) {
-                throw err;
-            }
-
-            json = JSON.parse(data);
-            notefiles = json.notefiles;
-
-            if (notefiles.indexOf(filename) === -1) {
-                notefiles.push(filename);
-                notefiles.sort();
-
-                writeFile(json);
-            } else {
-                console.log('Not adding, it already exists!');
-            }
-        });
-        */
     } else {
         json = {
             'notefiles': [
-                filename
+                notefile
             ]
         };
 
         writeFile(json);
-        console.log('.notaterc does not exist so creating it now!');
+        console.log('.notefilerc does not exist so creating it now!');
     }
 };
 
 getNotefiles = exports.getNotefiles = function (callback) {
-    fs.readFile('.notaterc', {
+    fs.readFile('.notefilerc', {
         encoding: 'utf8'
     }, function (err, data) {
         if (err) {
@@ -122,8 +106,35 @@ makeRequest = exports.makeRequest = function (note) {
     });
 };
 
+removeNotefile = exports.removeNotefile = function (notefile) {
+    if (fs.existsSync('.notefilerc')) {
+        getNotefiles(function (json) {
+            var notefiles = json.notefiles,
+                i, n;
+
+            // We can't assume it's a sorted list, entries could have been added by hand.
+            // We'll reverse sort b/c we will be removing entries.
+            notefiles.reverse();
+
+            // Multiple files could have been passed as CVS.
+            notefile = notefile.split(',').reverse();
+
+            for (i = notefile.length; i > -1; i--) {
+                if ((n = notefiles.indexOf(notefile[i])) > -1) {
+                    notefiles.splice(n, 1);
+                }
+            }
+
+            notefiles.sort();
+            writeFile(json);
+        });
+    } else {
+        console.log('.notefilerc does not exist so there cannot be a notefile to remove!');
+    }
+};
+
 writeFile = exports.writeFile = function (json) {
-    fs.writeFile('.notaterc', JSON.stringify(json, null, 4), {
+    fs.writeFile('.notefilerc', JSON.stringify(json, null, 4), {
         encoding: 'utf8',
         flag: 'w',
         // Octal 0666.
@@ -133,16 +144,19 @@ writeFile = exports.writeFile = function (json) {
             throw err;
         }
 
-        console.log('.notaterc successfully updated!');
+        console.log('.notefilerc successfully updated!');
     });
 };
 
 // `parseSystem` is alias  of parse(process.argv.slice(2)).
 opt = getopt.parseSystem();
-notefile = opt.options['add-notefile'];
 
-if (notefile) {
+if (notefile = opt.options['add-notefile']) {
     addNotefile(notefile);
+}
+// The value of --remove-notefile is optional so we must check for !== undefined.
+else if ((notefile = opt.options['remove-notefile']) !== undefined) {
+    removeNotefile(notefile);
 } else {
     note = opt.argv[0];
 
