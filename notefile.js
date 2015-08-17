@@ -58,6 +58,9 @@ getNotefiles = exports.getNotefiles = function (callback) {
         encoding: 'utf8'
     }, function (err, data) {
         if (err) {
+            // TODO: custom error handler?
+            // If .notefilerc does not exist, probably they are trying to add a note. There needs to be
+            // some warning that they should do --init or add a notefile, etc.
             throw err;
         }
 
@@ -106,32 +109,63 @@ makeRequest = exports.makeRequest = function (note) {
     });
 };
 
-removeNotefile = exports.removeNotefile = function (notefile) {
-    if (fs.existsSync('.notefilerc')) {
-        getNotefiles(function (json) {
-            var notefiles = json.notefiles,
-                i, n;
+removeNotefile = exports.removeNotefile = (function () {
+    function remove(json, notefiles, notefile) {
+        var i, n;
 
-            // We can't assume it's a sorted list, entries could have been added by hand.
-            // We'll reverse sort b/c we will be removing entries.
-            notefiles.reverse();
+        // We can't assume it's a sorted list, entries could have been added by hand.
+        // We'll reverse sort b/c we will be removing entries.
+        notefiles.reverse();
 
-            // Multiple files could have been passed as CVS.
-            notefile = notefile.split(',').reverse();
+        // Multiple files could have been passed as CVS if values were given on cli..
+        // If called from inquirer callback, notefile will be an array of values.
+        if (typeof notefile === 'string') {
+            notefile = notefile.split(',');
+        }
 
-            for (i = notefile.length; i > -1; i--) {
-                if ((n = notefiles.indexOf(notefile[i])) > -1) {
-                    notefiles.splice(n, 1);
-                }
+        notefile = notefile.reverse();
+
+        for (i = notefile.length; i > -1; i--) {
+            if ((n = notefiles.indexOf(notefile[i])) > -1) {
+                notefiles.splice(n, 1);
             }
+        }
 
-            notefiles.sort();
-            writeFile(json);
-        });
-    } else {
-        console.log('.notefilerc does not exist so there cannot be a notefile to remove!');
+        notefiles.sort();
+        writeFile(json);
     }
-};
+
+    return function (notefile) {
+        if (fs.existsSync('.notefilerc')) {
+            getNotefiles(function (json) {
+                var notefiles = json.notefiles,
+                    choices = [];
+
+                if (!notefile) {
+                    notefiles.forEach(function (val) {
+                        choices.push({
+                            name: val,
+                            value: val
+                        });
+                    });
+
+                    inquirer.prompt([{
+                        type: 'checkbox',
+                        name: 'notefile',
+                        message: 'Please choose the notefile(s) to remove:',
+                        choices: choices
+                    }], function (answers) {
+                        remove(json, notefiles, answers.notefile);
+                    });
+                } else {
+                    remove(json, notefiles, notefile);
+                }
+            });
+        } else {
+            console.log('.notefilerc does not exist so there cannot be a notefile to remove!');
+        }
+    };
+}());
 
 writeFile = exports.writeFile = function (json) {
     fs.writeFile('.notefilerc', JSON.stringify(json, null, 4), {
@@ -158,7 +192,7 @@ if (notefile = opt.options['add-notefile']) {
 else if ((notefile = opt.options['remove-notefile']) !== undefined) {
     removeNotefile(notefile);
 } else {
-    note = opt.argv[0];
+    note = opt.argv[0] || '';
 
     if (!note) {
         //throw new Error('You did not pass a note!');
