@@ -35,7 +35,7 @@ startServer = exports.startServer = function () {
 
 
             req.on('end', function () {
-                res.end('Notation completed succesfully.');
+                res.end('Filenote logged.');
             });
 
             /*

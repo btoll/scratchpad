@@ -7,12 +7,12 @@ var exports = module.exports = {},
     Curl = require('node-libcurl').Curl,
     readline = require('readline'),
     curl = new Curl(),
-    url  = 'http://localhost:1972',
     addNotefile, getNotefiles, makeRequest, removeNotefile, writeFile,
     notefile, note, getopt, opt, rl;
 
 getopt = new Getopt([
     ['' , 'add-notefile=FILE(,S)', 'Add a new notefile(s)'],
+    ['n' , 'notefile=FILE', 'When piping from STDIN the notefile to write to MUST be specified.'],
     ['' , 'remove-notefile[=FILE(,S)]', 'Remove a notefile(s)'],
     ['h', 'help', 'display this help']
 ]).bindHelp();
@@ -68,46 +68,58 @@ getNotefiles = exports.getNotefiles = function (callback) {
     });
 };
 
-makeRequest = exports.makeRequest = function (note) {
-    var data = {
-        note: note
+makeRequest = exports.makeRequest = (function () {
+    function send(data) {
+        // TODO: Don't hardcode url!
+        curl.setOpt(Curl.option.URL, 'http://localhost:1972');
+        curl.setOpt(Curl.option.POSTFIELDS, JSON.stringify(data));
+        //curl.setOpt(Curl.option.VERBOSE, true);
+
+        curl.perform();
+
+        curl.on('end', function (statusCode, body) {
+            // TODO: Check statusCode!
+            console.log(body);
+            this.close();
+        });
+
+        curl.on('error', curl.close.bind(curl));
+    }
+
+    return function (note, notefile) {
+        var data = {
+            note: note,
+            notefile: notefile
+        };
+
+        if (!notefile) {
+            getNotefiles(function (json) {
+                var notefiles = json.notefiles,
+                    choices = [];
+
+                notefiles.forEach(function (val) {
+                    choices.push({
+                        name: val,
+                        value: val
+                    });
+                });
+
+                inquirer.prompt([{
+                    type: 'list',
+                    name: 'notefile',
+                    message: 'Please choose the notefile to which the note should be written:',
+                    choices: choices
+                }], function (answers) {
+                    data.notefile = answers.notefile;
+
+                    send(data);
+                });
+            });
+        } else {
+            send(data);
+        }
     };
-
-    getNotefiles(function (json) {
-        var notefiles = json.notefiles,
-            choices = [];
-
-        notefiles.forEach(function (val) {
-            choices.push({
-                name: val,
-                value: val
-            });
-        });
-
-        inquirer.prompt([{
-            type: 'list',
-            name: 'notefile',
-            message: 'Please choose the notefile to which the note should be written:',
-            choices: choices
-        }], function (answers) {
-            data.notefile = answers.notefile;
-
-            curl.setOpt(Curl.option.URL, url);
-            curl.setOpt(Curl.option.POSTFIELDS, JSON.stringify(data));
-            //curl.setOpt(Curl.option.VERBOSE, true);
-
-            curl.perform();
-
-            curl.on('end', function (statusCode, body) {
-                // TODO: Check statusCode!
-                console.log(body);
-                this.close();
-            });
-
-            curl.on('error', curl.close.bind(curl));
-        });
-    });
-};
+}());
 
 removeNotefile = exports.removeNotefile = (function () {
     function remove(json, notefiles, notefile) {
@@ -207,7 +219,7 @@ else if ((notefile = opt.options['remove-notefile']) !== undefined) {
         });
 
         rl.on('close', function () {
-            makeRequest(note);
+            makeRequest(note, opt.options['notefile']);
         });
     } else {
         makeRequest(note);
