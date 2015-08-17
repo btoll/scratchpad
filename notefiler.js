@@ -125,8 +125,9 @@ makeRequest = exports.makeRequest = function (note) {
 writeFile = exports.writeFile = function (json) {
     fs.writeFile('.notaterc', JSON.stringify(json, null, 4), {
         encoding: 'utf8',
-        mode: 0666,
-        flag: 'w'
+        flag: 'w',
+        // Octal 0666.
+        mode: 438
     }, function (err) {
         if (err) {
             throw err;

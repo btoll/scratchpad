@@ -23,7 +23,8 @@ startServer = exports.startServer = function () {
                 fs.writeFile(data.notefile, data.note, {
                     encoding: 'utf8',
                     flag: 'a+',
-                    mode: 0666
+                    // Octal 0666.
+                    mode: 438
                 });
 
                 // Flood attack or faulty client, nuke request!
