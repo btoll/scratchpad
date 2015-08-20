@@ -2,7 +2,8 @@ var exports = module.exports = {},
     http = require('http'),
     fs = require('fs'),
     through = require('through2'),
-    tr, data, startServer;
+    port = process.argv[2] || 1972,
+    tr, startServer;
 
 /*
 tr = through(function (buff, _, next) {
@@ -15,10 +16,10 @@ tr = through(function (buff, _, next) {
 */
 
 startServer = exports.startServer = function () {
-    server = http.createServer(function (req, res) {
+    var server = http.createServer(function (req, res) {
         if (req.method === 'POST') {
             req.on('data', function (body) {
-                data = JSON.parse(body);
+                var data = JSON.parse(body);
 
                 fs.writeFile(data.notefile, data.note, {
                     encoding: 'utf8',
@@ -29,7 +30,7 @@ startServer = exports.startServer = function () {
 
                 // Flood attack or faulty client, nuke request!
                 if (body.length > 1e6) {
-                    request.connection.destroy();
+                    req.connection.destroy();
                 }
             });
 
@@ -51,7 +52,7 @@ startServer = exports.startServer = function () {
         }
     });
 
-    server.listen(1972);
+    server.listen(port);
 };
 
 startServer();
