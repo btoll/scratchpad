@@ -1,19 +1,8 @@
 var exports = module.exports = {},
     http = require('http'),
     fs = require('fs'),
-    through = require('through2'),
     port = process.argv[2] || 1972,
-    tr, startServer;
-
-/*
-tr = through(function (buff, _, next) {
-    data = JSON.parse(buff.toString());
-    file = data.file;
-
-    this.push(data.note);
-    next();
-});
-*/
+    startServer;
 
 startServer = exports.startServer = function () {
     var server = http.createServer(function (req, res) {
@@ -38,17 +27,6 @@ startServer = exports.startServer = function () {
             req.on('end', function () {
                 res.end('Filenote logged.');
             });
-
-            /*
-            req.pipe(tr)
-            .pipe(fs.createWriteStream('foo.txt', {
-                flags: 'a+',
-                encoding: 'utf8',
-                mode: 0666
-            }));
-
-            res.end('Notation completed succesfully.\n');
-            */
         }
     });
 
