@@ -7,18 +7,21 @@ var exports = module.exports = {},
     file, note, getopt, opt, rl;
 
 getopt = new Getopt([
-    ['' , 'add-notefile=FILE(,S)', 'Add a new notefile(s)'],
-    ['' , 'add-noteserver=SERVER(,S)', 'Add a new noteserver(s)'],
+    ['' , 'add-notefile=FILE(,S)', 'Add a new notefile(s).'],
+    ['' , 'add-noteserver=SERVER(,S)', 'Add a new noteserver(s).'],
     ['n' , 'notefile=FILE', 'When piping from STDIN the notefile to write to MUST be specified.'],
-    ['' , 'remove-notefile[=FILE(,S)]', 'Remove a notefile(s)'],
-    ['' , 'remove-noteserver[=SERVER(,S)]', 'Remove a noteserver(s)'],
-    ['h', 'help', 'display this help']
+    ['' , 'remove-notefile[=FILE(,S)]', 'Remove a notefile(s).'],
+    ['' , 'remove-noteserver[=SERVER(,S)]', 'Remove a noteserver(s).'],
+    ['' , 'show-config', 'Show the contents of the `.notefilerc` config file.'],
+    ['h', 'help', 'Display help.']
 ]).bindHelp();
 
-// `parseSystem` is alias  of parse(process.argv.slice(2)).
+// `parseSystem` is an alias of parse(process.argv.slice(2)).
 opt = getopt.parseSystem();
 
-if ((file = opt.options['add-notefile'])) {
+if (opt.options['show-config']) {
+    notefile.showConfig();
+} else if ((file = opt.options['add-notefile'])) {
     notefile.addNotefile(file);
 } else if ((file = opt.options['add-noteserver'])) {
     notefile.addNoteserver(file);
