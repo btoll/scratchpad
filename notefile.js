@@ -23,7 +23,7 @@ opt = getopt.parseSystem();
 if (opt.options['init']) {
     notefile.init();
 } else if (opt.options['config']) {
-    notefile.showConfig();
+    notefile.showConfigFile();
 } else if ((file = opt.options['add-notefile'])) {
     notefile.addNotefile(file);
 } else if ((file = opt.options['add-noteserver'])) {
