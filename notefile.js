@@ -9,17 +9,20 @@ var exports = module.exports = {},
 getopt = new Getopt([
     ['' , 'add-notefile=FILE(,S)', 'Add a new notefile(s).'],
     ['' , 'add-noteserver=SERVER(,S)', 'Add a new noteserver(s).'],
+    ['c' , 'config', 'Show the contents of the `.notefilerc` config file.'],
+    ['' , 'init', 'Setup and create the .notefilerc config file.'],
     ['n' , 'notefile=FILE', 'When piping from STDIN the notefile to write to MUST be specified.'],
     ['' , 'remove-notefile[=FILE(,S)]', 'Remove a notefile(s).'],
     ['' , 'remove-noteserver[=SERVER(,S)]', 'Remove a noteserver(s).'],
-    ['' , 'show-config', 'Show the contents of the `.notefilerc` config file.'],
     ['h', 'help', 'Display help.']
 ]).bindHelp();
 
 // `parseSystem` is an alias of parse(process.argv.slice(2)).
 opt = getopt.parseSystem();
 
-if (opt.options['show-config']) {
+if (opt.options['init']) {
+    // TODO
+} else if (opt.options['config']) {
     notefile.showConfig();
 } else if ((file = opt.options['add-notefile'])) {
     notefile.addNotefile(file);
@@ -36,23 +39,24 @@ else if ((file = opt.options['remove-noteserver']) !== undefined) {
 } else {
     note = opt.argv[0] || '';
 
-    if (!note) {
-        //throw new Error('You did not pass a note!');
-        rl = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout,
-            terminal: true
-        });
+    getConfigFile(function (json) {
+        if (!note) {
+            rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout,
+                terminal: true
+            });
 
-        rl.on('line', function (line) {
-            note += line + '\n';
-        });
+            rl.on('line', function (line) {
+                note += line + '\n';
+            });
 
-        rl.on('close', function () {
-            notefile.makeRequest(note, opt.options['notefile']);
-        });
-    } else {
-        notefile.makeRequest(note);
-    }
+            rl.on('close', function () {
+                notefile.makeRequest(note + json.newlines || '\n', opt.options['notefile']);
+            });
+        } else {
+            notefile.makeRequest(note + json.newlines || '\n');
+        }
+    });
 }
 
