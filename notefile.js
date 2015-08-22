@@ -21,7 +21,7 @@ getopt = new Getopt([
 opt = getopt.parseSystem();
 
 if (opt.options['init']) {
-    // TODO
+    notefile.init();
 } else if (opt.options['config']) {
     notefile.showConfig();
 } else if ((file = opt.options['add-notefile'])) {
@@ -38,6 +38,19 @@ else if ((file = opt.options['remove-noteserver']) !== undefined) {
     notefile.removeNoteserver(file);
 } else {
     note = opt.argv[0] || '';
+
+//        n = !newlines ?
+//            '' :
+//            (function () {
+//                var str = '',
+//                    i;
+//
+//                for (i = 0; i < newlines; i++) {
+//                    str += eol;
+//                }
+//
+//                return str;
+//            }());
 
     getConfigFile(function (json) {
         if (!note) {
