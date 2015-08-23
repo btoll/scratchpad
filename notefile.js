@@ -20,56 +20,58 @@ getopt = new Getopt([
 // `parseSystem` is an alias of parse(process.argv.slice(2)).
 opt = getopt.parseSystem();
 
-if (opt.options['init']) {
-    notefile.init();
-} else if (opt.options['config']) {
-    notefile.showConfigFile();
-} else if ((file = opt.options['add-notefile'])) {
-    notefile.addNotefile(file);
-} else if ((file = opt.options['add-noteserver'])) {
-    notefile.addNoteserver(file);
-}
-// The value of --remove-notefile is optional so we must check for !== undefined.
-else if ((file = opt.options['remove-notefile']) !== undefined) {
-    notefile.removeNotefile(file);
-}
-// The value of --remove-notefile is optional so we must check for !== undefined.
-else if ((file = opt.options['remove-noteserver']) !== undefined) {
-    notefile.removeNoteserver(file);
-} else {
-    note = opt.argv[0] || '';
+switch (true) {
+    case opt.options['init']:
+        notefile.init();
+        break;
 
-//        n = !newlines ?
-//            '' :
-//            (function () {
-//                var str = '',
-//                    i;
-//
-//                for (i = 0; i < newlines; i++) {
-//                    str += eol;
-//                }
-//
-//                return str;
-//            }());
+    case opt.options['config']:
+        notefile.showConfigFile();
+        break;
 
-    getConfigFile(function (json) {
-        if (!note) {
-            rl = readline.createInterface({
-                input: process.stdin,
-                output: process.stdout,
-                terminal: true
-            });
+    case opt.options['add-notefile']:
+        notefile.addNotefile(file);
+        break;
 
-            rl.on('line', function (line) {
-                note += line + '\n';
-            });
+    case opt.options['add-noteserver']:
+        notefile.addNoteserver(file);
+        break;
 
-            rl.on('close', function () {
-                notefile.makeRequest(note + json.newlines || '\n', opt.options['notefile']);
-            });
-        } else {
-            notefile.makeRequest(note + json.newlines || '\n');
-        }
-    });
+    // The value of --remove-notefile is optional so we must check for !== undefined.
+    case ((file = opt.options['remove-notefile']) !== undefined):
+        notefile.removeNotefile(file);
+        break;
+
+    // The value of --remove-notefile is optional so we must check for !== undefined.
+    case ((file = opt.options['remove-noteserver']) !== undefined):
+        notefile.removeNoteserver(file);
+        break;
+
+    default:
+        note = opt.argv[0] || '';
+
+        notefile.getConfigFile(function (err, json) {
+            if (err) {
+                throw err;
+            }
+
+            if (!note) {
+                rl = readline.createInterface({
+                    input: process.stdin,
+                    output: process.stdout,
+                    terminal: true
+                });
+
+                rl.on('line', function (line) {
+                    note += line + '\n';
+                });
+
+                rl.on('close', function () {
+                    notefile.makeRequest(note + notefile.generateNewlines(json), opt.options['notefile']);
+                });
+            } else {
+                notefile.makeRequest(note + notefile.generateNewlines(json));
+            }
+        });
 }
 
