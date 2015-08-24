@@ -4,8 +4,8 @@
   "description": "Easy note saver",
   "main": "notefile.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node notefile.js"
+    "test": "python3 /usr/local/www/utley/utley.py --test --silent",
+    "start": "node notefile.js \"Test note\""
   },
   "author": "Benjamin Toll",
   "license": "WTFPL",
@@ -17,6 +17,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/btoll/notefile"
-  },
+  }
 }
 
