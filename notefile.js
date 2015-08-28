@@ -1,7 +1,6 @@
 // https://github.com/JCMais/node-libcurl/blob/master/examples/post-data.js
 // curl -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"file":"bar.txt", "note": "aaaaaaahhh!!"}' http://localhost:1972
-var exports = module.exports = {},
-    notefile = require('lib/util.js'),
+var notefile = require('lib/util.js'),
     readline = require('readline'),
     Getopt = require('node-getopt'),
     file, note, getopt, opt, rl;

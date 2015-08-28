@@ -1,10 +1,9 @@
-var exports = module.exports = {},
-    http = require('http'),
+var http = require('http'),
     fs = require('fs'),
     port = process.argv[2] || 1972,
     startServer;
 
-startServer = exports.startServer = function () {
+startServer = module.exports.startServer = function () {
     var server = http.createServer(function (req, res) {
         if (req.method === 'POST') {
             req.on('data', function (body) {
