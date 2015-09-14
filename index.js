@@ -1,6 +1,6 @@
 // https://github.com/JCMais/node-libcurl/blob/master/examples/post-data.js
 // curl -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"file":"bar.txt", "note": "aaaaaaahhh!!"}' http://localhost:1972
-var notefile = require('lib/util.js'),
+var notefile = require('/usr/local/www/notefile/lib/util.js'),
     readline = require('readline'),
     Getopt = require('node-getopt'),
     file, note, getopt, opt, rl;
@@ -20,19 +20,20 @@ getopt = new Getopt([
 opt = getopt.parseSystem();
 
 switch (true) {
-    case opt.options['init']:
+    case !!opt.options['init']:
         notefile.init();
         break;
 
-    case opt.options['config']:
+    case !!opt.options['config']:
+        // TODO
         notefile.showConfigFile();
         break;
 
-    case opt.options['add-notefile']:
+    case !!opt.options['add-notefile']:
         notefile.addNotefile(file);
         break;
 
-    case opt.options['add-noteserver']:
+    case !!opt.options['add-noteserver']:
         notefile.addNoteserver(file);
         break;
 
@@ -51,7 +52,9 @@ switch (true) {
 
         notefile.getConfigFile(function (err, json) {
             if (err) {
-                throw err;
+                console.log(err.name);
+                console.log(err.message);
+                return;
             }
 
             if (!note) {
