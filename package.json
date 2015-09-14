@@ -2,10 +2,10 @@
   "name": "notefile",
   "version": "0.1.0",
   "description": "Easy note saver",
-  "main": "notefile.js",
+  "main": "index.js",
   "scripts": {
     "test": "python3 /usr/local/www/utley/utley.py --test --silent",
-    "start": "node notefile.js \"Test note\""
+    "start": "node index.js \"Test note\""
   },
   "author": "Benjamin Toll",
   "license": "WTFPL",
