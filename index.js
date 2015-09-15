@@ -26,7 +26,14 @@ switch (true) {
 
     case !!opt.options['config']:
         // TODO
-        notefile.showConfigFile();
+        notefile.showConfigFile(function (err, json, config) {
+            if (!err) {
+                console.log('\nReading ' +
+                    ((config === '.notefilerc') ? 'local' : 'global') +
+                    ' config file.\n'
+                );
+            }
+        });
         break;
 
     case !!opt.options['add-notefile']:
