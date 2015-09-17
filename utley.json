@@ -1,14 +1,14 @@
 {
-    "clean": [{
-        "run": "rm -rf build"
-    }],
-
     "js": [{
         "src": [
             "index.js",
             "server.js"
         ],
         "output": "build/index.js"
-    }]
+    }],
+
+    "tasks": {
+        "clean": "rm -rf build"
+    }
 }
 
