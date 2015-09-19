@@ -13,6 +13,7 @@ getopt = new Getopt([
     ['n' , 'notefile=FILE', 'When piping from STDIN the notefile to write to MUST be specified.'],
     ['' , 'remove-notefile[=FILE(,S)]', 'Remove a notefile(s).'],
     ['' , 'remove-noteserver[=SERVER(,S)]', 'Remove a noteserver(s).'],
+    ['' , 'set-default', 'Change a default value.'],
     ['h', 'help', 'Display help.']
 ]).bindHelp();
 
@@ -52,6 +53,10 @@ switch (true) {
     // The value of --remove-notefile is optional so we must check for !== undefined.
     case ((file = opt.options['remove-noteserver']) !== undefined):
         notefile.removeNoteserver(file);
+        break;
+
+    case !!opt.options['set-default']:
+        notefile.setDefault();
         break;
 
     default:
