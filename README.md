@@ -25,6 +25,7 @@ If created, a global `.notefilerc` config file will be written to the user's hom
       -n, --notefile=FILE                   When piping from STDIN the notefile to write to MUST be specified.
           --remove-notefile[=FILE(,S)]      Remove a notefile(s).
           --remove-noteserver[=SERVER(,S)]  Remove a noteserver(s).
+          --set-default                     Change a default value.
       -h, --help                            Display help.
 
 ### Screenshots

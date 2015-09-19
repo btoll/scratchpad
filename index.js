@@ -31,26 +31,24 @@ switch (true) {
             if (!err) {
                 console.log('\nReading ' +
                     ((config === '.notefilerc') ? 'local' : 'global') +
-                    ' config file.\n'
+                    ' config file.'
                 );
             }
         });
         break;
 
-    case !!opt.options['add-notefile']:
+    case ((file = opt.options['add-notefile']) !== undefined):
         notefile.addNotefile(file);
         break;
 
-    case !!opt.options['add-noteserver']:
+    case ((file = opt.options['add-noteserver']) !== undefined):
         notefile.addNoteserver(file);
         break;
 
-    // The value of --remove-notefile is optional so we must check for !== undefined.
     case ((file = opt.options['remove-notefile']) !== undefined):
         notefile.removeNotefile(file);
         break;
 
-    // The value of --remove-notefile is optional so we must check for !== undefined.
     case ((file = opt.options['remove-noteserver']) !== undefined):
         notefile.removeNoteserver(file);
         break;
