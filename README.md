@@ -18,15 +18,17 @@ If created, a global `.notefilerc` config file will be written to the user's hom
 
 ### Usage
 
-          --add-notefile=FILE(,S)           Add a new notefile(s).
-          --add-noteserver=SERVER(,S)       Add a new noteserver(s).
-      -c, --config                          Show the contents of the `.notefilerc` config file.
-          --init                            Setup and create the .notefilerc config file.
-      -n, --notefile=FILE                   When piping from STDIN the notefile to write to MUST be specified.
-          --remove-notefile[=FILE(,S)]      Remove a notefile(s).
-          --remove-noteserver[=SERVER(,S)]  Remove a noteserver(s).
-          --set-default                     Change a default value.
-      -h, --help                            Display help.
+    Property | Description
+    ------------ | -------------
+    --add-notefile=FILE(,S) | Add a new notefile(s).
+    --add-noteserver=SERVER(,S) | Add a new noteserver(s).
+    -c, --config | Show the contents of the `.notefilerc` config file.
+    --init | Setup and create the .notefilerc config file.
+    -n, --notefile=FILE | When piping from STDIN the notefile to write to MUST be specified.
+    --remove-notefile[=FILE(,S)] | Remove a notefile(s).
+    --remove-noteserver[=SERVER(,S)] | Remove a noteserver(s).
+    --set-default | Change a default value.
+    -h, --help | Display help.
 
 ### Screenshots
 ![ScreenShot](/resources/screenshots/notefile_created.png?raw=true)
