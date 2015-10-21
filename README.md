@@ -20,8 +20,9 @@ If created, a global `.notefilerc` config file will be written to the user's hom
 
     Property | Description
     ------------ | -------------
-    --add-notefile=FILE(,S) | Add a new notefile(s).
-    --add-noteserver=SERVER(,S) | Add a new noteserver(s).
+    --add-notefile[=FILE(,S)] | Add a new notefile(s).
+    --add-noteserver[=SERVER(,S)] | Add a new noteserver(s).
+    --cat[=NOTEFILE] | Dump the contents of a notefile to STDIN.
     -c, --config | Show the contents of the `.notefilerc` config file.
     --init | Setup and create the .notefilerc config file.
     -n, --notefile=FILE | When piping from STDIN the notefile to write to MUST be specified.
