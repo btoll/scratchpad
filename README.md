@@ -3,6 +3,10 @@ I frequently save little notes to myself, usually one line commands, but I never
 
 I decided it would be a fun project to create an easy way to save these to any file on my HDD or to a remote server.  It would need to be a CLI tool that would allow me to choose where and how the note should be saved (plaintext or enciphered) and would allow me to manage the number of notefiles and noteservers as I see fit.
 
+### Installation
+
+`npm install https://github.com/btoll/notefile.git -g`
+
 ### Howto
 The first step is to create a `.notefilerc` config file.  To accomplish this, simply run:
 
