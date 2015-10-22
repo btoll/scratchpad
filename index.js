@@ -7,7 +7,7 @@ var notefile = require('/usr/local/www/notefile/lib/util.js'),
 
 getopt = new Getopt([
     ['', 'add-notefile[=FILE(,S)]', 'Add a new notefile(s).'],
-    ['', 'add-noteserver=[SERVER(,S)]', 'Add a new noteserver(s).'],
+    ['', 'add-noteserver[=SERVER(,S)]', 'Add a new noteserver(s).'],
     ['', 'cat=[=NOTEFILE]', 'Dump the contents of a notefile to STDIN.'],
     ['c', 'config', 'Show the contents of the `.notefilerc` config file.'],
     ['', 'init', 'Setup and create the .notefilerc config file.'],
