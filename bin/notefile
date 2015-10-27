@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* eslint-disable no-console */
+
 // https://github.com/JCMais/node-libcurl/blob/master/examples/post-data.js
 // curl -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"file":"bar.txt", "note": "aaaaaaahhh!!"}' http://localhost:1972
 var notefile = require('../lib/util.js'),
