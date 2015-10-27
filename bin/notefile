@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // https://github.com/JCMais/node-libcurl/blob/master/examples/post-data.js
 // curl -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d '{"file":"bar.txt", "note": "aaaaaaahhh!!"}' http://localhost:1972
 var notefile = require('../lib/util.js'),
@@ -31,14 +33,11 @@ switch (true) {
         break;
 
     case !!opt.options['config']:
-        // TODO
-        notefile.showConfigFile(function (err, json, config) {
-            if (!err) {
-                console.log('\nReading ' +
-                    ((config === '.notefilerc') ? 'local' : 'global') +
-                    ' config file.'
-                );
-            }
+        notefile.getConfigFile().then(function (res) {
+            console.log(
+                'Reading config file ' + res.configFile + '\n\n',
+                res.data
+            );
         });
         break;
 
@@ -65,12 +64,8 @@ switch (true) {
     default:
         note = opt.argv[0] || '';
 
-        notefile.getConfigFile(function (err, json) {
-            if (err) {
-                console.log(err.name);
-                console.log(err.message);
-                return;
-            }
+        notefile.getConfigFile().then(function (res) {
+            var json = JSON.parse(res.data);
 
             if (!note) {
                 rl = readline.createInterface({
@@ -87,6 +82,7 @@ switch (true) {
                     notefile.makeRequest(note + notefile.generateNewlines(json), opt.options['notefile']);
                 });
             } else {
+                // Add any newlines to the note text and pass on.
                 notefile.makeRequest(note + notefile.generateNewlines(json));
             }
         });
