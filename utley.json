@@ -1,14 +1,21 @@
 {
     "js": [{
         "src": [
-            "index.js",
-            "server.js"
+            "bin/notefile",
+            "lib"
         ],
-        "output": "build/index.js"
+        "output": "build/notefile.js"
     }],
 
     "tasks": {
-        "clean": "rm -rf build"
-    }
+        "clean": "rm -rf build",
+        "lint": "eslint bin lib"
+    },
+
+    "build": [
+        "#clean",
+        "#lint",
+        "js"
+    ]
 }
 
