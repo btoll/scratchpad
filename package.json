@@ -5,7 +5,7 @@
   "bin": {
     "notefile": "./bin/notefile"
   },
-  "main": "index.js",
+  "main": "lib/util.js",
   "scripts": {
     "test": "python3 /usr/local/www/utley/utley.py --test --silent",
     "start": "node index.js \"Test note\""
@@ -14,6 +14,7 @@
   "license": "WTFPL",
   "dependencies": {
     "inquirer": "^0.11.0",
+    "jcrypt": "git+https://github.com/btoll/jcrypt.git",
     "node-getopt": "^0.2.3",
     "osenv": "^0.1.3"
   },
