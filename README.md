@@ -24,14 +24,15 @@ If created, a global `.notefilerc` config file will be written to the user's hom
 
     Property | Description
     ------------ | -------------
-    --add-notefile[=FILE(,S)] | Add a new notefile(s).
-    --add-noteserver[=SERVER(,S)] | Add a new noteserver(s).
-    --cat[=NOTEFILE] | Dump the contents of a notefile to STDIN.
+    --add-notefile[=file(,s)] | Add a new notefile(s).
+    --add-noteserver[=server(,s)] | Add a new noteserver(s).
+    --cat[=notefile] | Dump the contents of a notefile to STDIN.
     -c, --config | Show the contents of the `.notefilerc` config file.
+    -e, --edit | Edit a notefile.
     --init | Setup and create the .notefilerc config file.
-    -n, --notefile=FILE | When piping from STDIN the notefile to write to MUST be specified.
-    --remove-notefile[=FILE(,S)] | Remove a notefile(s).
-    --remove-noteserver[=SERVER(,S)] | Remove a noteserver(s).
+    -n, --notefile=file | When piping from STDIN the notefile to write to MUST be specified.
+    --remove-notefile[=file(,s)] | Remove a notefile(s).
+    --remove-noteserver[=server(,s)] | Remove a noteserver(s).
     --set-default | Change a default value.
     -h, --help | Display help.
 

@@ -12,6 +12,7 @@ getopt = new Getopt([
     ['', 'add-noteserver[=server(,s)]', 'Add a new noteserver(s).'],
     ['', 'cat[=notefile]', 'Dump the contents of a notefile to STDIN.'],
     ['c', 'config', 'Show the contents of the `.notefilerc` config file.'],
+    ['e', 'edit', 'Edit a notefile.'],
     ['', 'init', 'Setup and create the .notefilerc config file.'],
     ['n', 'notefile=file', 'When piping from STDIN the notefile to write to MUST be specified.'],
     ['', 'remove-notefile[=file(,s)]', 'Remove a notefile(s).'],
@@ -39,6 +40,10 @@ switch (true) {
                 res.data
             );
         });
+        break;
+
+    case ((file = opt.options['edit']) !== undefined):
+        notefile.edit(file);
         break;
 
     case ((file = opt.options['add-notefile']) !== undefined):
