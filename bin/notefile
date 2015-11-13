@@ -39,7 +39,7 @@
         case !!opt.options['config']:
             notefile.getConfigFile().then((res) => {
                 console.log(
-                    'Reading config file ' + res.configFile + '\n\n',
+                    `Reading config file ${res.configFile} \n\n`,
                     res.data
                 );
             });
