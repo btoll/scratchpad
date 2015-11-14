@@ -72,30 +72,25 @@
         default:
             note = opt.argv[0] || '';
 
-            notefile.getConfigFile().then((res) => {
-                let json = JSON.parse(res.data);
+            if (!note) {
+                console.log('Type your note here, ^C to write:\n');
 
-                if (!note) {
-                    console.log('Type your note here, ^C to write:\n');
+                rl = readline.createInterface({
+                    input: process.stdin,
+                    output: process.stdout,
+                    terminal: true
+                });
 
-                    rl = readline.createInterface({
-                        input: process.stdin,
-                        output: process.stdout,
-                        terminal: true
-                    });
+                rl.on('line', (line) => {
+                    note += line + '\n';
+                });
 
-                    rl.on('line', (line) => {
-                        note += line + '\n';
-                    });
-
-                    rl.on('close', () => {
-                        notefile.makeRequest(note + notefile.generateNewlines(json), opt.options['notefile']);
-                    });
-                } else {
-                    // Add any newlines to the note text and pass on.
-                    notefile.makeRequest(note + notefile.generateNewlines(json));
-                }
-            });
+                rl.on('close', () => {
+                    notefile.makeRequest(note, opt.options['notefile']);
+                });
+            } else {
+                notefile.makeRequest(note);
+            }
     }
 }());
 
