@@ -36,6 +36,3 @@ If created, a global `.scratchpadrc` config file will be written to the user's h
     --set-default | Change a default value.
     -h, --help | Display help.
 
-### Screenshots
-![ScreenShot](/resources/screenshots/scratchpad_created.png?raw=true)
-
