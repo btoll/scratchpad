@@ -1,10 +1,10 @@
 {
     "js": [{
         "src": [
-            "bin/notefile",
+            "bin/scratchpad",
             "lib"
         ],
-        "output": "build/notefile.js"
+        "output": "build/scratchpad.js"
     }],
 
     "tasks": {

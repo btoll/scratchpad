@@ -1,9 +1,9 @@
 {
-  "name": "notefile",
+  "name": "scratchpad",
   "version": "0.1.0",
-  "description": "Easy note saver",
+  "description": "Quickly and easily save every brilliant thought with scratchpad",
   "bin": {
-    "notefile": "./bin/notefile"
+    "scratchpad": "./bin/scratchpad"
   },
   "main": "lib/util.js",
   "scripts": {
@@ -20,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/btoll/notefile"
+    "url": "https://github.com/btoll/scratchpad"
   }
 }
 

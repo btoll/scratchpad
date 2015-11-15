@@ -1,0 +1,96 @@
+#!/usr/bin/env node
+
+/* eslint-disable no-console */
+
+(() => {
+    'use strict';
+
+    let scratchpad = require('../lib/util.js'),
+        readline = require('readline'),
+        Getopt = require('node-getopt'),
+        file, note, getopt, opt, rl;
+
+    getopt = new Getopt([
+        ['', 'add-scratchpad[=file(,s)]', 'Add a new scratchpad(s).'],
+        ['', 'add-server[=server(,s)]', 'Add a new server(s).'],
+        ['', 'cat[=scratchpad]', 'Dump the contents of a scratchpad to STDIN.'],
+        ['c', 'config', 'Show the contents of the `.scratchpadrc` config file.'],
+        ['e', 'edit', 'Edit a scratchpad in $EDITOR.'],
+        ['', 'init', 'Setup and create the .scratchpadrc config file.'],
+        ['n', 'scratchpad=file', 'When piping from STDIN the scratchpad to write to MUST be specified.'],
+        ['', 'remove-scratchpad[=file(,s)]', 'Remove a scratchpad(s).'],
+        ['', 'remove-server[=server(,s)]', 'Remove a server(s).'],
+        ['', 'set-default', 'Change a default value.'],
+        ['h', 'help', 'Display help.']
+    ]).bindHelp();
+
+    // `parseSystem` is an alias of parse(process.argv.slice(2)).
+    opt = getopt.parseSystem();
+
+    switch (true) {
+        case !!opt.options['init']:
+            scratchpad.init();
+            break;
+
+        case ((file = opt.options['cat']) !== undefined):
+            scratchpad.catScratchpad(file);
+            break;
+
+        case !!opt.options['config']:
+            scratchpad.getConfigFile().then((res) => {
+                console.log(
+                    `Reading config file ${res.configFile} \n\n`,
+                    res.data
+                );
+            });
+            break;
+
+        case ((file = opt.options['edit']) !== undefined):
+            scratchpad.edit(file);
+            break;
+
+        case ((file = opt.options['add-scratchpad']) !== undefined):
+            scratchpad.addScratchpad(file);
+            break;
+
+        case ((file = opt.options['add-server']) !== undefined):
+            scratchpad.addServer(file);
+            break;
+
+        case ((file = opt.options['remove-scratchpad']) !== undefined):
+            scratchpad.removeScratchpad(file);
+            break;
+
+        case ((file = opt.options['remove-server']) !== undefined):
+            scratchpad.removeServer(file);
+            break;
+
+        case !!opt.options['set-default']:
+            scratchpad.setDefault();
+            break;
+
+        default:
+            note = opt.argv[0] || '';
+
+            if (!note) {
+                console.log('Scratch your note here, ^C to write:\n');
+
+                rl = readline.createInterface({
+                    input: process.stdin,
+                    output: process.stdout,
+                    terminal: true
+                });
+
+                rl.on('line', (line) => {
+                    note += line + '\n';
+                });
+
+                rl.on('close', () => {
+                    scratchpad.makeRequest(note, opt.options['scratchpad']);
+                });
+            } else {
+                scratchpad.makeRequest(note);
+            }
+    }
+}());
+
