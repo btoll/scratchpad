@@ -37,12 +37,7 @@
             break;
 
         case !!opt.options['config']:
-            scratchpad.getConfigFile().then((res) => {
-                console.log(
-                    `Reading config file ${res.configFile} \n\n`,
-                    res.data
-                );
-            });
+            scratchpad.readConfigFile();
             break;
 
         case ((file = opt.options['edit']) !== undefined):
