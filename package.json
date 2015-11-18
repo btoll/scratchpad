@@ -15,8 +15,8 @@
   "dependencies": {
     "inquirer": "^0.11.0",
     "jcrypt": "git+https://github.com/btoll/jcrypt.git",
-    "node-getopt": "^0.2.3",
-    "osenv": "^0.1.3"
+    "osenv": "^0.1.3",
+    "yargs": "^3.30.0"
   },
   "repository": {
     "type": "git",

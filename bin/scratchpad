@@ -6,85 +6,88 @@
     'use strict';
 
     let scratchpad = require('../lib/util.js'),
-        readline = require('readline'),
-        Getopt = require('node-getopt'),
-        file, note, getopt, opt, rl;
+        argv = require('yargs')
+            .usage('Usage: scratchpad <command> [options]')
 
-    getopt = new Getopt([
-        ['', 'add-scratchpad[=file(,s)]', 'Add a new scratchpad(s).'],
-        ['', 'add-server[=server(,s)]', 'Add a new server(s).'],
-        ['', 'cat[=scratchpad]', 'Dump the contents of a scratchpad to STDIN.'],
-        ['c', 'config', 'Show the contents of the `.scratchpadrc` config file.'],
-        ['e', 'edit', 'Edit a scratchpad in $EDITOR.'],
-        ['', 'init', 'Setup and create the .scratchpadrc config file.'],
-        ['n', 'scratchpad=file', 'When piping from STDIN the scratchpad to write to MUST be specified.'],
-        ['', 'remove-scratchpad[=file(,s)]', 'Remove a scratchpad(s).'],
-        ['', 'remove-server[=server(,s)]', 'Remove a server(s).'],
-        ['', 'set-default', 'Change a default value.'],
-        ['h', 'help', 'Display help.']
-    ]).bindHelp();
+            .example('scratchpad init', 'Create a global or local config file')
 
-    // `parseSystem` is an alias of parse(process.argv.slice(2)).
-    opt = getopt.parseSystem();
+            .command('add-scratchpad', 'Add a new scratchpad(s).')
+            .command('add-server', 'Add a new server(s).')
+            .command('cat', 'Dump the contents of a scratchpad to STDIN.')
+            .command('config', 'Show the contents of the `.scratchpadrc` config file.')
+            .command('edit', 'Edit a scratchpad in $EDITOR.')
+            .command('init', 'Setup and create the .scratchpadrc config file.')
+            .command('remove-scratchpad', 'Remove a scratchpad(s).')
+            .command('remove-server', 'Remove a server(s).')
+            .command('set', 'Change a default value.')
 
-    switch (true) {
-        case !!opt.options['init']:
-            scratchpad.init();
-            break;
+            .alias('f', 'file')
+            .describe('f', 'The file(s) on which to operate')
 
-        case ((file = opt.options['cat']) !== undefined):
-            scratchpad.catScratchpad(file);
-            break;
+            .help('h')
+            .alias('h', 'help')
+            .argv,
 
-        case !!opt.options['config']:
-            scratchpad.readConfigFile();
-            break;
+        arg = argv._[0],
+        file = argv.file;
 
-        case ((file = opt.options['edit']) !== undefined):
-            scratchpad.edit(file);
-            break;
-
-        case ((file = opt.options['add-scratchpad']) !== undefined):
+    switch (arg) {
+        case 'add-scratchpad':
             scratchpad.addScratchpad(file);
             break;
 
-        case ((file = opt.options['add-server']) !== undefined):
+        case 'add-server':
             scratchpad.addServer(file);
             break;
 
-        case ((file = opt.options['remove-scratchpad']) !== undefined):
+        case 'cat':
+            scratchpad.catScratchpad(file);
+            break;
+
+        case 'config':
+            scratchpad.readConfigFile();
+            break;
+
+        case 'edit':
+            scratchpad.edit(file);
+            break;
+
+        case 'init':
+            scratchpad.init();
+            break;
+
+        case 'remove-scratchpad':
             scratchpad.removeScratchpad(file);
             break;
 
-        case ((file = opt.options['remove-server']) !== undefined):
+        case 'remove-server':
             scratchpad.removeServer(file);
             break;
 
-        case !!opt.options['set-default']:
+        case 'set':
             scratchpad.setDefault();
             break;
 
         default:
-            note = opt.argv[0] || '';
+            if (!arg) {
+                let note = arg,
+                    rl = require('readline').createInterface({
+                        input: process.stdin,
+                        output: process.stdout,
+                        terminal: true
+                    });
 
-            if (!note) {
                 console.log('Scratch your note here, ^C to write:\n');
-
-                rl = readline.createInterface({
-                    input: process.stdin,
-                    output: process.stdout,
-                    terminal: true
-                });
 
                 rl.on('line', (line) => {
                     note += line + '\n';
                 });
 
                 rl.on('close', () => {
-                    scratchpad.makeRequest(note, opt.options['scratchpad']);
+                    scratchpad.makeRequest(note);
                 });
             } else {
-                scratchpad.makeRequest(note);
+                scratchpad.makeRequest(arg);
             }
     }
 }());
