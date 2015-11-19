@@ -70,7 +70,7 @@
 
         default:
             if (!arg) {
-                let note = arg,
+                let note = '',
                     rl = require('readline').createInterface({
                         input: process.stdin,
                         output: process.stdout,
