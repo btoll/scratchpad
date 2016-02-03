@@ -5,7 +5,7 @@
 (() => {
     'use strict';
 
-    let scratchpad = require('../lib/util.js'),
+    let scratchpad = require('../index.js'),
         argv = require('yargs')
             .usage('Usage: scratchpad <command> [options]')
 

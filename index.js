@@ -66,15 +66,16 @@
                     entries = json[field] = [];
                 }
 
+                // newEntry is defined when writing notes on the CLI.
                 if (newEntry) {
                     currentLen = entries.length;
 
                     // Multiple entries (scratchpads or servers) could have been passed.
                     newEntry = newEntry.split(',');
 
-                    for (i = 0, len = newEntry.length; i < len; i++) {
-                        pushScratchpad(entries, newEntry[i]);
-                    }
+                    newEntry.forEach((entry) => {
+                        pushScratchpad(entries, path.basename(entry));
+                    });
 
                     if (currentLen < entries.length) {
                         writeConfigFile(JSON.stringify(json, null, 4))
@@ -90,8 +91,8 @@
                         if (answers.entry) {
                             pushScratchpad(entries, answers.entry, () => {
                                 writeConfigFile(JSON.stringify(json, null, 4))
-                                    .then(log)
-                                    .catch(logError);
+                                .then(log)
+                                .catch(logError);
                             });
                         } else {
                             logError(`No ${f} given, aborting.`);
@@ -162,9 +163,21 @@
 
             scratchpads.sort();
 
-            writeConfigFile(JSON.stringify(json, null, 4))
-                .then(log.bind(null, `The value(s) ${toRemove.join(', ')} have been removed.\n\n`))
-                .catch(logError);
+            Promise.all(toRemove.map((entry) => {
+                new Promise((resolve, reject) => {
+                    // Is the callback necessary?
+                    fs.unlink(`${itemDir}/${entry}`, (err) => {
+                        if (err) {
+                            reject(err);
+                        }
+                    });
+                });
+            }))
+            .then(() => {
+                return writeConfigFile(JSON.stringify(json, null, 4))
+            })
+            .then(log.bind(null, `The value(s) ${toRemove.join(', ')} have been removed.\n\n`))
+            .catch(logError);
         }
 
         return (scratchpad, field) => {
@@ -329,7 +342,8 @@
                                 openEditor(() => {
                                     // Re-encrypt once done.
                                     // TODO: Remove my credentials.
-                                    jcrypt(scratchpad, null, ['--encrypt', '-r', 'ben@benjamintoll.com', '--armor'])
+                                    //jcrypt(scratchpad, null, ['--encrypt', '-r', 'ben@benjamintoll.com', '--armor'])
+                                    jcrypt(scratchpad, null, ['--encrypt', '-r', 'ben@benjamintoll.com'])
                                         .then(() => {
                                             log(`Re-encrypting and closing ${scratchpad}`);
                                         })
@@ -597,7 +611,8 @@
                                 .then(() => {
                                     // Re-encrypt once done.
                                     // TODO: Remove my credentials.
-                                    jcrypt(scratchpad, null, ['--encrypt', '-r', 'ben@benjamintoll.com', '--armor'])
+                                    //jcrypt(scratchpad, null, ['--encrypt', '-r', 'ben@benjamintoll.com', '--armor'])
+                                    jcrypt(scratchpad, null, ['--encrypt', '-r', 'ben@benjamintoll.com'])
                                         .then(() => {
                                             log(`Re-encrypting and closing ${scratchpad}`);
                                         });
