@@ -74,7 +74,7 @@
                     newEntry = newEntry.split(',');
 
                     newEntry.forEach((entry) => {
-                        pushScratchpad(entries, path.basename(entry));
+                        pushScratchpad(entries, entry);
                     });
 
                     if (currentLen < entries.length) {
@@ -479,7 +479,7 @@
 
                     if (errCode === 'ENOENT' || errCode === 'ENOTDIR') {
                         return new Promise((resolve, reject) => {
-                            mkdirp(require('path').dirname(scratchpad), 0o700, (err) => {
+                            mkdirp(path.dirname(scratchpad), 0o700, (err) => {
                                 if (err) {
                                     reject(err);
                                 } else {
@@ -597,7 +597,8 @@
                             return json.useGPG;
                         }
                     }], (answers) => {
-                        let scratchpad = `${scratchpadDir}/${answers.scratchpad}`,
+                        let relativePath = answers.scratchpad,
+                            absolutePath = `${scratchpadDir}/${relativePath}`,
                             server = answers.server,
                             local = (server === 'filesystem');
 
@@ -606,36 +607,36 @@
                                 log(`[WARN] Remote encryption isn't supported`);
                             } else {
                                 // Decrypt, write and re-encrypt.
-                                jcrypt(scratchpad, null, ['--decrypt'])
-                                .then(doWriteFile.bind(null, scratchpad, note))
+                                jcrypt(absolutePath, null, ['--decrypt'])
+                                .then(doWriteFile.bind(null, absolutePath, note))
                                 .then(() => {
                                     // Re-encrypt once done.
                                     // TODO: Remove my credentials.
-                                    //jcrypt(scratchpad, null, ['--encrypt', '-r', 'ben@benjamintoll.com', '--armor'])
-                                    jcrypt(scratchpad, null, ['--encrypt', '-r', 'ben@benjamintoll.com'])
+                                    //jcrypt(absolutePath, null, ['--encrypt', '-r', 'ben@benjamintoll.com', '--armor'])
+                                    jcrypt(absolutePath, null, ['--encrypt', '-r', 'ben@benjamintoll.com'])
                                         .then(() => {
-                                            log(`Re-encrypting and closing ${scratchpad}`);
+                                            log(`Re-encrypting and closing ${absolutePath}`);
                                         });
                                 })
                                 .then(() => {
                                     // Lastly, if new add to the config file.
                                     if (answers.newScratchpad) {
-                                        add(scratchpad, 'scratchpads');
+                                        add(relativePath, 'scratchpads');
                                     }
                                 })
                                 .catch(logError);
                             }
                         } else {
                             if (local) {
-                                doWriteFile(scratchpad, note).catch(logError);
+                                doWriteFile(absolutePath, note).catch(logError);
 
                                 if (answers.newScratchpad) {
                                     // Also, add the new scratchpad to the config file.
-                                    add(scratchpad, 'scratchpads').catch(logError);
+                                    add(relativePath, 'scratchpads').catch(logError);
                                 }
                             } else {
                                 send(server, {
-                                    scratchpad: scratchpad,
+                                    scratchpad: absolutePath,
                                     note: note
                                 })
                                 .then(log)
