@@ -28,7 +28,7 @@ One of the most common uses for me is to read from `stdin`. This is accomplished
 
     scratchpad
 
-![ScreenShot](/screenshots/scratchpad_readline.png?raw=true)
+![ScreenShot](https://raw.github.com/btoll/i/master/scratchpad/readline.png)
 
 When done, write to the file by pressing `Ctl-C` and following the prompts as usual.
 
