@@ -1,17 +1,21 @@
-### The Big Idea
+[![Build Status](https://travis-ci.org/btoll/scratchpad.svg?branch=master)](https://travis-ci.org/btoll/scratchpad)
+
+# Scratchpad
+
+## The Big Idea
 I frequently save little notes to myself, usually one line commands, but I never know where I should put them for later perusal.
 
 I decided it would be a fun project to create an easy way to save these to any file on my HDD or to a remote server.  It would need to be a CLI tool that would allow me to choose where and how the note should be saved (plaintext or enciphered) and would allow me to manage the number of scratchpads and servers as I see fit.
 
-### GPG Support
+## GPG Support
 
 **scratchpad** provides support for GPG via the [jcrypt] module. Any encrypted and signed files can be written to and edited by transparently deciphering in the background and enciphering again upon completion of the write/edit operation.
 
-### Installation
+## Installation
 
 `npm install https://github.com/btoll/scratchpad.git -g`
 
-### Howto
+## Howto
 The first step is to create a `.scratchpadrc` config file.  To accomplish this, simply run:
 
     scratchpad init
@@ -32,7 +36,7 @@ One of the most common uses for me is to read from `stdin`. This is accomplished
 
 When done, write to the file by pressing `Ctl-C` and following the prompts as usual.
 
-### Usage
+## Usage
 
     Command | Description
     ------------ | -------------
@@ -51,5 +55,12 @@ When done, write to the file by pressing `Ctl-C` and following the prompts as us
     -f, --file[=arg(,s)] | The file(s) on which to operate.
     -h, --help | Display help.
 
+## License
+
+[MIT](LICENSE)
+
+## Author
+
+Benjamin Toll
 [jcrypt]: https://github.com/btoll/jcrypt
 
