@@ -7,8 +7,9 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "python3 /usr/local/www/utley/utley.py --test --silent",
-    "start": "node index.js \"Test note\""
+    "lint": "eslint index.js lib bin",
+    "start": "node bin/scratchpad \"Test note\"",
+    "test": "npm run lint"
   },
   "author": "Benjamin Toll",
   "license": "WTFPL",

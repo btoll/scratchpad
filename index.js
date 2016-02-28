@@ -60,7 +60,7 @@
                     entries = json[field],
                     // Chop off the last character ('s') since the field will be plural!
                     f = field.slice(0, -1),
-                    currentLen, i, len;
+                    currentLen;
 
                 if (!entries) {
                     entries = json[field] = [];
@@ -166,7 +166,7 @@
             Promise.all(toRemove.map((entry) => {
                 new Promise((resolve, reject) => {
                     // Is the callback necessary?
-                    fs.unlink(`${itemDir}/${entry}`, (err) => {
+                    fs.unlink(`${scratchpadDir}/${entry}`, (err) => {
                         if (err) {
                             reject(err);
                         }
@@ -174,7 +174,7 @@
                 });
             }))
             .then(() => {
-                return writeConfigFile(JSON.stringify(json, null, 4))
+                return writeConfigFile(JSON.stringify(json, null, 4));
             })
             .then(log.bind(null, `The value(s) ${toRemove.join(', ')} have been removed.\n\n`))
             .catch(logError);
@@ -342,7 +342,7 @@
                                 openEditor(() => {
                                     // Re-encrypt once done.
                                     // TODO: Remove my credentials.
-                                    //jcrypt(scratchpad, null, ['--encrypt', '-r', 'ben@benjamintoll.com', '--armor'])
+                                    // jcrypt(scratchpad, null, ['--encrypt', '-r', 'ben@benjamintoll.com', '--armor'])
                                     jcrypt(scratchpad, null, ['--encrypt', '-r', 'ben@benjamintoll.com'])
                                         .then(() => {
                                             log(`Re-encrypting and closing ${scratchpad}`);
@@ -604,7 +604,7 @@
 
                         if (answers.encrypted) {
                             if (!local) {
-                                log(`[WARN] Remote encryption isn't supported`);
+                                log('[WARN] Remote encryption isn\'t supported');
                             } else {
                                 // Decrypt, write and re-encrypt.
                                 jcrypt(absolutePath, null, ['--decrypt'])
@@ -612,7 +612,7 @@
                                 .then(() => {
                                     // Re-encrypt once done.
                                     // TODO: Remove my credentials.
-                                    //jcrypt(absolutePath, null, ['--encrypt', '-r', 'ben@benjamintoll.com', '--armor'])
+                                    // jcrypt(absolutePath, null, ['--encrypt', '-r', 'ben@benjamintoll.com', '--armor'])
                                     jcrypt(absolutePath, null, ['--encrypt', '-r', 'ben@benjamintoll.com'])
                                         .then(() => {
                                             log(`Re-encrypting and closing ${absolutePath}`);
