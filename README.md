@@ -62,5 +62,4 @@ When done, write to the file by pressing `Ctl-C` and following the prompts as us
 ## Author
 
 Benjamin Toll
-[jcrypt]: https://github.com/btoll/jcrypt
 
