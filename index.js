@@ -1,18 +1,17 @@
-/* eslint-disable no-console */
-
 (() => {
     'use strict';
 
     let fs = require('fs'),
         inquirer = require('inquirer'),
         jcrypt = require('jcrypt'),
+        logger = require('logger'),
         mkdirp = require('mkdirp'),
         path = require('path'),
         home = process.env.HOME,
         scratchpadConfig = `${home}/.scratchpadrc`,
         scratchpadDir = `${home}/.scratchpad.d`,
-        log = console.log,
-        logError = log.bind(console, '[ERROR]'),
+        log = logger.log,
+        logError = logger.error,
         Scratchpad, add, remove, locateConfigFile, writeConfigFile,
         readStream, writeStream, writeScratchpad;
 

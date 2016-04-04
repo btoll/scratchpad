@@ -16,6 +16,7 @@
   "dependencies": {
     "inquirer": "^0.11.0",
     "jcrypt": "git+https://github.com/btoll/jcrypt.git",
+    "logger": "git+https://github.com/btoll/logger.git",
     "mkdirp": "^0.5.1",
     "yargs": "^3.30.0"
   },
@@ -27,3 +28,4 @@
     "eslint": "^2.2.0"
   }
 }
+

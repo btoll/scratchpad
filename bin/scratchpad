@@ -1,11 +1,10 @@
 #!/usr/bin/env node
 
-/* eslint-disable no-console */
-
 (() => {
     'use strict';
 
     let scratchpad = require('../index.js'),
+        require = require('logger'),
         argv = require('yargs')
             .usage('Usage: scratchpad <command> [options]')
 
@@ -77,7 +76,7 @@
                         terminal: true
                     });
 
-                console.log('Scratch your note here, ^C to write:\n');
+                logger.log('Scratch your note here, ^C to write:\n');
 
                 rl.on('line', (line) => {
                     note += line + '\n';
